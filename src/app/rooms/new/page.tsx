@@ -1,19 +1,20 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { LoadingSwap } from "@/components/ui/loading-swap";
+import { createRoomSchema } from "@/services/supabase/schemas/rooms";
 
-const formSchema = z.object({
-    name: z.string().min(1).trim(),
-    isPublic: z.boolean()
-})
 
-type FormData = z.infer<typeof formSchema>;
+
+type FormData = z.infer<typeof createRoomSchema>;
 
 export default function NewRoomPage() {
 
@@ -22,10 +23,11 @@ export default function NewRoomPage() {
             name: "",
             isPublic: false,
         },
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(createRoomSchema),
     })
 
-    function handleSubmit(data: FormData) {
+    async function handleSubmit(data: FormData) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
         console.log(data);
     }
 
@@ -74,21 +76,38 @@ export default function NewRoomPage() {
                                             onCheckedChange={onChange}
                                             aria-invalid={fieldState.invalid}
                                         />
+                                        <FieldContent>
 
-
-                                        <FieldLabel htmlFor={field.name}>
-                                            Public Room
-                                        </FieldLabel>
-                                        {
-                                            fieldState.error && (
-                                                <FieldError
-                                                    errors={[fieldState.error]} />
-                                            )
-                                        }
+                                            <FieldLabel className="font-normal" htmlFor={field.name}>
+                                                Public Room
+                                            </FieldLabel>
+                                            {
+                                                fieldState.error && (
+                                                    <FieldError
+                                                        errors={[fieldState.error]} />
+                                                )
+                                            }
+                                        </FieldContent>
 
                                     </Field>
                                 )}
                             />
+
+                            <Field orientation="horizontal" className="w-full">
+                                <Button
+                                    type="submit"
+                                    className="grow"
+                                    disabled={form.formState.isSubmitting}
+                                >
+                                    <LoadingSwap isLoading={form.formState.isSubmitting}>
+                                        Create Room
+                                    </LoadingSwap>
+                                </Button>
+                                <Button variant="outline" asChild>
+                                    <Link href="/">Cancel</Link>
+                                </Button>
+                            </Field>
+
                         </FieldGroup>
                     </form>
                 </CardContent>
