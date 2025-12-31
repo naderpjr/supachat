@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
@@ -53,6 +54,38 @@ export default function NewRoomPage() {
                                                     errors={[fieldState.error]} />
                                             )
                                         }
+                                    </Field>
+                                )}
+                            />
+
+
+                            <Controller
+                                name="isPublic"
+                                control={form.control}
+                                render={({ field: { value, onChange, ...field }, fieldState }) => (
+                                    <Field
+                                        orientation="horizontal"
+                                        data-invalid={fieldState.invalid}>
+
+                                        <Checkbox
+                                            {...field}
+                                            id={field.name}
+                                            checked={value}
+                                            onCheckedChange={onChange}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+
+
+                                        <FieldLabel htmlFor={field.name}>
+                                            Public Room
+                                        </FieldLabel>
+                                        {
+                                            fieldState.error && (
+                                                <FieldError
+                                                    errors={[fieldState.error]} />
+                                            )
+                                        }
+
                                     </Field>
                                 )}
                             />
