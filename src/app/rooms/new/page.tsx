@@ -1,8 +1,10 @@
 "use client";
 
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 const formSchema = z.object({
@@ -33,8 +35,30 @@ export default function NewRoomPage() {
                     <CardTitle>New Room</CardTitle>
                     <CardDescription>Create a new chat room</CardDescription>
                 </CardHeader>
-
-                <form onSubmit={form.handleSubmit(handleSubmit)}></form>
+                <CardContent>
+                    <form onSubmit={form.handleSubmit(handleSubmit)}>
+                        <FieldGroup>
+                            <Controller
+                                name="name"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor={field.name}>
+                                            Room Name
+                                        </FieldLabel>
+                                        <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
+                                        {
+                                            fieldState.error && (
+                                                <FieldError
+                                                    errors={[fieldState.error]} />
+                                            )
+                                        }
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+                    </form>
+                </CardContent>
             </Card>
         </div>
     )
