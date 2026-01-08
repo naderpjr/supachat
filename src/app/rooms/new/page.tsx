@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { createRoomSchema } from "@/services/supabase/schemas/rooms";
+import { createRoom } from "@/services/supabase/actions/rooms";
+import { toast } from "sonner";
 
 
 
@@ -27,8 +29,11 @@ export default function NewRoomPage() {
     })
 
     async function handleSubmit(data: FormData) {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        console.log(data);
+        const { error, message } = await createRoom(data)
+
+        if (error) {
+            toast.error(message)
+        }
     }
 
     return (
